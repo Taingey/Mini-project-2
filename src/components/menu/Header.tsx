@@ -1,8 +1,10 @@
+"use client"
 import Image from "next/image";
-import React, { useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { FaCartShopping, FaPhone, FaUser } from "react-icons/fa6";
 import { navbar } from "./menu";
 import Link from "next/link";
+import { IoMdMenu } from "react-icons/io";
 
 interface NavbarItem {
   path: string;
@@ -10,24 +12,40 @@ interface NavbarItem {
 }
 
 const Header: React.FC = () => {
+  const [menuOpen, setMenuOpen] = useState(true);
+
+  const getMenuStyle = (menuOpen: boolean) => {
+    if (document.documentElement.clientWidth <= 2600) {
+      return { left: menuOpen ? "0" : "-200%" };
+    } else {
+      return {}; // Return empty object if screen width is greater than 2600px
+    }
+  };
+
   return (
-    <header className="w-full fixed z-50">
+    <header className="w-full z-50">
       <div className="bg-black py-2 text-white">
         <div className="container mx-auto flex items-center justify-between px-2">
           <div className="flex place-items-center gap-2">
             <FaPhone />
             +855 93731414
           </div>
-          <div className="">Get 50% off on selected Items | Shop Now</div>
+          <div>Get 50% off on selected Items | Shop Now</div>
         </div>
       </div>
       <div className="bg-white py-3 px-2">
         <nav className="container mx-auto flex items-center justify-between">
-          <div>
-            <Image src="/logo.png" alt="Logo" width={130} height={130} />
+          <div className="flex place-items-center gap-3">
+            <IoMdMenu
+              className="menu text-4xl text-slate-950 cursor-pointer lgs:block dark:text-white "
+              onClick={() => setMenuOpen((prev) => !prev)}
+            />
+            <Image src="/Logo_not_bg.png" alt="Logo" width={130} height={130} />
           </div>
-          <div className="flex items-center justify-between gap-[6rem] lgs:hidden">
-            <ul className="flex gap-5 font-medium text-[16px]">
+          <div
+            className="navigation flex items-center justify-between gap-[6rem]"
+            style={getMenuStyle(menuOpen)}>
+            <ul className="navbar flex gap-5 font-medium text-[16px]">
               {navbar.map((e: NavbarItem, index: number) => (
                 <li key={index}>
                   <Link href={e.path}>{e.title}</Link>
@@ -49,7 +67,7 @@ const Header: React.FC = () => {
             </div>
             <div className="flex place-items-center gap-2">
               <FaCartShopping />
-              Account
+              Cart {/* Changed "Account" to "Cart" */}
             </div>
           </div>
         </nav>

@@ -16,8 +16,6 @@
   }
 }
 
-
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -30,9 +28,9 @@ body {
 .image1{
   min-height: 100vh;
   background-image: url('/banner_1.png');
-  background-position: center center;
+  background-position: center;
   background-repeat: no-repeat;
-  background-size: cover cover;
+  background-size: cover;
 }
 .image2{
   min-height: 100vh;
@@ -71,4 +69,38 @@ body {
   left: 0;
   border-radius: 3rem;
   z-index: 1;
+}
+.menu{
+  display: none;
+}
+
+@media screen and (max-width: 1050px) {
+  .menu{
+    display: block;
+  }
+  .navigation {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    top: 6.5rem;
+    right: -100%;
+    left: 0%;
+    background-color: white;
+    display: grid;
+    align-items: end;
+    padding: 2rem 1rem;
+    gap: 1rem;
+    justify-content: start;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    z-index: 999;
+
+}
+  .navbar{
+    width: 100%;
+    display: grid;
+    align-items: start;
+    justify-content: start;
+    gap: 1rem;
+  }
 }

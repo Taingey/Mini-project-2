@@ -22,7 +22,7 @@ const Slide = () => {
 
   return (
     <div className={styles.slide}>
-      <img src={`/images/${images[index]}`} alt={`Slide ${index + 1}`} />
+      <img src={`/images/${images[index]}`} alt={`Slide ${index + 1}`}  className='w-full'/>
     </div>
   );
 };
