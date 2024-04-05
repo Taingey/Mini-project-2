@@ -1,22 +1,40 @@
 
 import React from "react";
-import { Card } from "flowbite-react";
 import { ProductType } from "@/types/products";
 
-export default function ProductCard({username, desc, image}: ProductType) {
+export default function ProductCard({seller, desc, image, price, name}: ProductType) {
   return (
-    <div className="flex items-center justify-center">
-      <div className="max-w-xs overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800">
-        <div className="px-4 py-2  h-[7rem]">
-          <h1 className="text-xl font-bold text-gray-800 uppercase dark:text-white">{username}</h1>
-          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 line-clamp-3">{desc}</p>
-        </div>
-        <img className="object-cover w-full mt-2" src={image} alt="NIKE AIR"/>
-        <div className="flex items-center justify-between px-4 py-2 bg-gray-900">
-            <h1 className="text-lg font-bold text-white">$129</h1>
-            <button className="px-2 py-1 text-xs font-semibold text-gray-900 uppercase transition-colors duration-300 transform bg-white rounded hover:bg-gray-200 focus:bg-gray-400 focus:outline-none">Add to cart</button>
-        </div>
+    <div className="max-w-sm w-full bg-white rounded-lg shadow-lg overflow-hidden dark:bg-gray-700">
+      <div>
+        <img className="object-cover h-64 w-full" src={image} alt="Converse sneakers" />
+      </div>
+
+      <div className="flex flex-col gap-1 mt-4 px-4">
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-50">{name}</h2>
+        <span className="font-normal text-gray-600 dark:text-gray-300">{seller}</span>
+        <span className="font-semibold text-gray-800 dark:text-gray-50">$ {price}</span>
+      </div>
+
+      <div className="flex gap-4 mt-4 px-4">
+        <span className="sr-only">Colors available</span>
+
+        <button aria-label="Yellow" className="p-1 border border-gray-200 dark:border-gray-500 rounded-full cursor-pointer bg-yellow-500 dark:bg-yellow-400"></button>
+
+        <button aria-label="Red" className="p-1 border border-gray-200 dark:border-gray-500 rounded-full cursor-pointer bg-red-500 dark:bg-red-400"></button>
+
+        <button aria-label="Blue" className="p-1 border border-gray-200 dark:border-gray-500 rounded-full cursor-pointer bg-blue-500 dark:bg-blue-400"></button>
+
+        <button aria-label="Black" className="p-1 border border-gray-200 dark:border-gray-500 rounded-full cursor-pointer bg-gray-800 dark:bg-gray-600"></button>
+      </div>
+
+      <div className="mt-4 p-4 border-t border-gray-200 dark:border-gray-500">
+        <button className="w-full flex justify-between items-center font-bold cursor-pointer hover:underline text-gray-800 dark:text-gray-50">
+          <span className="text-base">Add to Cart</span>
+          <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+        </button>
+      </div>
     </div>
-  </div>
   );
 }

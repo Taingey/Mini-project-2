@@ -1,6 +1,6 @@
-"use client"
+"use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaCartShopping, FaPhone, FaUser } from "react-icons/fa6";
 import { navbar } from "./menu";
 import Link from "next/link";
@@ -13,24 +13,34 @@ interface NavbarItem {
 
 const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(true);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const getMenuStyle = (menuOpen: boolean) => {
-    if (document.documentElement.clientWidth <= 2600) {
+    if (isClient && document.documentElement.clientWidth <= 2600) {
       return { left: menuOpen ? "0" : "-200%" };
     } else {
-      return {}; // Return empty object if screen width is greater than 2600px
+      return {};
     }
   };
 
   return (
     <header className="w-full z-50">
       <div className="bg-black py-2 text-white">
-        <div className="container mx-auto flex items-center justify-between px-2">
+        <div className="container text-[14px] mx-auto flex items-center justify-between px-2 smp:text-[12px]">
           <div className="flex place-items-center gap-2">
             <FaPhone />
             +855 93731414
           </div>
-          <div>Get 50% off on selected Items | Shop Now</div>
+          <div>
+            Get 50% off on selected Items |{" "}
+            <a href="#" className="font-bold text-red-500 hover:underline">
+              Shop Now
+            </a>
+          </div>
         </div>
       </div>
       <div className="bg-white py-3 px-2">
@@ -43,8 +53,9 @@ const Header: React.FC = () => {
             <Image src="/Logo_not_bg.png" alt="Logo" width={130} height={130} />
           </div>
           <div
-            className="navigation flex items-center justify-between gap-[6rem]"
-            style={getMenuStyle(menuOpen)}>
+            className="navigation flex items-center justify-between gap-[6rem] "
+            style={getMenuStyle(menuOpen)}
+          >
             <ul className="navbar flex gap-5 font-medium text-[16px]">
               {navbar.map((e: NavbarItem, index: number) => (
                 <li key={index}>
@@ -61,11 +72,11 @@ const Header: React.FC = () => {
             </div>
           </div>
           <div className="flex place-content-center gap-5">
-            <div className="flex place-items-center gap-2">
+            <div className="flex place-items-center gap-2 cursor-pointer">
               <FaUser />
               Account
             </div>
-            <div className="flex place-items-center gap-2">
+            <div className="flex place-items-center gap-2 cursor-pointer">
               <FaCartShopping />
               Cart {/* Changed "Account" to "Cart" */}
             </div>
