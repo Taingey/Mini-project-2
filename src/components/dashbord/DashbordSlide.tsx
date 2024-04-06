@@ -12,20 +12,20 @@ import {
 } from "react-icons/hi";
 
 const DashboardSlide = () => {
-  const [menuOpen, setMenuOpen] = useState(true); // Initially closed
-  const [isClient, setIsClient] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(true);
 
   useEffect(() => {
-    setIsClient(true);
     const handleResize = () => {
       if (window.innerWidth <= 1050) {
         setMenuOpen(false);
       }
     };
+
     handleResize();
-    window.addEventListener("resize", handleResize); // Add resize listener
+    window.addEventListener("resize", handleResize);
+
     return () => {
-      window.removeEventListener("resize", handleResize); // Clean up on unmount
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -34,7 +34,7 @@ const DashboardSlide = () => {
   };
 
   const getMenuStyle = () => {
-    if (isClient && document.documentElement.clientWidth <= 1050) {
+    if (typeof window !== 'undefined' && window.innerWidth <= 1050) {
       return { left: menuOpen ? "0" : "-200%" };
     } else {
       return {};
