@@ -1,12 +1,13 @@
 
 import React from "react";
 import { ProductType } from "@/types/products";
+import Image from "next/image";
 
 export default function ProductCard({seller, desc, image, price, name}: ProductType) {
   return (
     <div className="max-w-sm w-full bg-white rounded-lg shadow-lg overflow-hidden dark:bg-gray-700">
       <div>
-        <img className="object-cover h-64 w-full" src={image} alt="Converse sneakers" />
+        <Image className="object-cover h-64 w-full" src={image} alt="Converse sneakers" width={300} height={300}/>
       </div>
 
       <div className="flex flex-col gap-1 mt-4 px-4">

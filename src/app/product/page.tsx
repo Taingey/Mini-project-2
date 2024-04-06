@@ -23,7 +23,7 @@ async function Products() {
       <div>
         <div className="container mx-auto mt-8 mb-8 px-5">
           <Suspense fallback={<LoadingComponent />}>
-            <div className="flex">
+            <div className="flex mt-5">
               <div
                 className="border-l-8 border-red-500 rounded-full mb-8 h-[36px]
             "

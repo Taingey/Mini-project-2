@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 interface Product {
@@ -5,6 +6,7 @@ interface Product {
   name: string;
   price: number;
   image: string;
+  desc: string;
 }
 
 interface ModalProps {
@@ -12,28 +14,34 @@ interface ModalProps {
   onClose: () => void;
   product: Product | null;
   onNext: () => void;
+  onBack: () => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, product, onNext }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, product, onNext, onBack }) => {
   return (
     <div className={`modal ${isOpen ? "is-open" : ""}`}>
       <div
-        className="fixed inset-0 z-10 overflow-y-auto"
+        className="fixed top-[20%] inset-0 z-10"
         aria-labelledby="modal-title"
         role="dialog"
         aria-modal="true"
       >
         <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
           <div className="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-900 sm:my-8 sm:align-middle sm:max-w-md sm:w-full sm:p-6">
-            <span className="close absolute -top-1 text-3xl right-2" onClick={onClose}>
+            <span
+              className="close absolute top-1 text-3xl right-3 cursor-pointer"
+              onClick={onClose}
+            >
               &times;
             </span>
             {product && (
-              <div>
-                <img
+              <div className="mt-3">
+                <Image
+                  width={300}
+                  height={300}
                   className="object-cover w-full h-48 rounded-md"
                   src={product.image}
-                  alt=""
+                  alt="image"
                 />
 
                 <div className="mt-4 text-center">
@@ -43,7 +51,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, product, onNext }) => {
                   >
                     {product.name}
                   </h3>
-
+                  <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
+                    Price: {product.desc}
+                  </p>
                   <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                     Price: {product.price}
                   </p>
@@ -60,10 +70,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, product, onNext }) => {
 
             <div className="mt-5 sm:flex sm:items-center sm:-mx-2">
               <button
-                onClick={onClose}
+                onClick={onBack}
                 className="w-full px-4 py-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:w-1/2 sm:mx-2 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40"
               >
-                Close
+                Back
               </button>
 
               <button

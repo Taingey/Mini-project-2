@@ -13,19 +13,34 @@ interface NavbarItem {
 
 const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(true);
-  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
+    const handleResize = () => {
+      if (window.innerWidth <= 1050) {
+        setMenuOpen(false);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
-  const getMenuStyle = (menuOpen: boolean) => {
-    if (isClient && document.documentElement.clientWidth <= 2600) {
+  const toggleMenu = () => {
+    setMenuOpen((prev) => !prev);
+  };
+
+  const getMenuStyle = () => {
+    if (typeof window !== 'undefined' && window.innerWidth <= 1050) {
       return { left: menuOpen ? "0" : "-200%" };
     } else {
       return {};
     }
   };
+
 
   return (
     <header className="w-full z-50">
@@ -48,13 +63,13 @@ const Header: React.FC = () => {
           <div className="flex place-items-center gap-3">
             <IoMdMenu
               className="menu text-4xl text-slate-950 cursor-pointer lgs:block dark:text-white "
-              onClick={() => setMenuOpen((prev) => !prev)}
+              onClick={toggleMenu}
             />
             <Image src="/Logo_not_bg.png" alt="Logo" width={130} height={130} />
           </div>
           <div
             className="navigation flex items-center justify-between gap-[6rem] "
-            style={getMenuStyle(menuOpen)}
+            style={getMenuStyle()}
           >
             <ul className="navbar flex gap-5 font-medium text-[16px]">
               {navbar.map((e: NavbarItem, index: number) => (
@@ -64,11 +79,13 @@ const Header: React.FC = () => {
               ))}
             </ul>
             <div>
-              <input
-                type="search"
-                placeholder="Search Product"
-                className="border-none px-4 py-2 bg-slate-100"
-              />
+              <div>
+                <input
+                  type="search"
+                  placeholder="Search Product"
+                  className="border-none px-4 py-2 bg-slate-100"
+                />
+              </div>
             </div>
           </div>
           <div className="flex place-content-center gap-5">
@@ -78,7 +95,7 @@ const Header: React.FC = () => {
             </div>
             <div className="flex place-items-center gap-2 cursor-pointer">
               <FaCartShopping />
-              Cart {/* Changed "Account" to "Cart" */}
+              Cart
             </div>
           </div>
         </nav>
