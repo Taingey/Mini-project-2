@@ -1,10 +1,14 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Modal from "./Model";
 import CreateDataTable from "./CreateDataTable";
 import { ProductDashbord } from "@/types/productDashbord";
+interface Product extends ProductDashbord {
+  price: number;
+  descts: string;
+}
 
 const url_based = "https://store.istad.co/api/products";
 
@@ -38,11 +42,11 @@ const UserTables: React.FC<ProductDashbord> = () => {
             id: product.id.toString()
           })
         );
-  
+
         const hasInvalidIds = productsWithUniqueIds.some(
           (product: ProductDashbord) => !product.id
         );
-  
+
         setProducts(productsWithUniqueIds);
         setIsLoading(false);
       } catch (error) {
@@ -57,20 +61,22 @@ const UserTables: React.FC<ProductDashbord> = () => {
     }
     fetchData();
   }, []);
-  
 
   useEffect(() => {
     if (searchQuery.trim() === "") {
       setFilteredProducts(products);
     } else {
-      const filtered = products.filter(product =>
-        (product.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (product.id.toString().toLowerCase().includes(searchQuery.toLowerCase()))
+      const filtered = products.filter(
+        (product) =>
+          product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          product.id
+            .toString()
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
       );
       setFilteredProducts(filtered);
     }
   }, [searchQuery, products]);
-  
 
   const handleCreateSuccess = (newProduct: ProductDashbord) => {
     setProducts([...products, newProduct]);
@@ -94,7 +100,9 @@ const UserTables: React.FC<ProductDashbord> = () => {
       await fetch(`${url_based}/${productId}`, {
         method: "DELETE"
       });
-      setProducts(products.filter((product) => String(product.id) !== productId));
+      setProducts(
+        products.filter((product) => String(product.id) !== productId)
+      );
     } catch (error) {
       console.error("Error deleting product:", error);
     }
@@ -112,15 +120,14 @@ const UserTables: React.FC<ProductDashbord> = () => {
     const currentIndex = products.findIndex(
       (product) => product.id === selectedProductId
     );
-  
+
     if (currentIndex !== -1 && currentIndex < products.length - 1) {
       const nextProduct = products[currentIndex + 1];
-  
+
       handleDetails(String(nextProduct.id));
     }
   };
-  
-  
+
   const handleBackProduct = () => {
     const currentIndex = products.findIndex(
       (product) => product.id === selectedProductId
@@ -130,7 +137,6 @@ const UserTables: React.FC<ProductDashbord> = () => {
       handleDetails(String(prevProduct.id));
     }
   };
-  
 
   const columns: GridColDef<ProductDashbord>[] = [
     { field: "id", headerName: "ID", width: 150 },
@@ -170,7 +176,6 @@ const UserTables: React.FC<ProductDashbord> = () => {
         </button>
       )
     }
-    
   ];
 
   return (
@@ -197,13 +202,12 @@ const UserTables: React.FC<ProductDashbord> = () => {
         rows={filteredProducts}
         columns={columns}
         loading={isLoading}
-        pageSize={5}
         checkboxSelection
         disableRowSelectionOnClick
         getRowId={(row) => row.id}
       />
 
-      {isModalOpen && (
+      {isModalOpen && selectedProduct && (
         <Modal
           isOpen={isModalOpen}
           onClose={handleCloseModal}

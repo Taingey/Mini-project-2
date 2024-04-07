@@ -3,4 +3,6 @@ export type ProductDashbord = {
     name: string,
     email: string,
     image: string,
+    price: number,
+    desc: string
 }
