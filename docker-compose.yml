@@ -7,4 +7,4 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - 3285:3000
+      - 3286:3000
