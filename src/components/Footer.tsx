@@ -13,16 +13,16 @@ const Footer = () => {
               <span>The customer is at the heart of our unique business model, which includes design.</span>
             </div>
             <div className="flex gap-4">
-              <Image src="/master.png" alt="Visa" width={35} height={35} />
-              <Image src="/paypal.png" alt="Visa" width={35} height={35} />
-              <Image src="/visa.png" alt="Visa" width={35} height={35} />
+              <Image src="/images/master.png" alt="Mastercard" width={35} height={35} />
+              <Image src="/images/paypal.png" alt="PayPal" width={35} height={35} />
+              <Image src="/images/visa.png" alt="Visa" width={35} height={35} />
             </div>
           </div>
           <div className=" flex flex-col justify-center gap-3">
             <h2 className="text-xl font-semibold">SHOPPING</h2>
             <div className="flex flex-col gap-3">
               <span>Clothing Store</span>
-              <span>Trending Shopes</span>
+              <span>Trending Shops</span>
               <span>Accessories</span>
               <span>Sale</span>
             </div>
@@ -32,12 +32,12 @@ const Footer = () => {
             <div className="flex flex-col gap-3">
               <span className="cursor-pointer">Contact Us</span>
               <span className="cursor-pointer">Payment Methods</span>
-              <span className="cursor-pointer"> Delivary</span>
+              <span className="cursor-pointer">Delivery</span>
               <span className="cursor-pointer">Return & Exchanges</span>
             </div>
           </div>
           <div className=" flex flex-col justify-center gap-4">
-            <h2 className="text-xl font-semibold">NEWLETTER</h2>
+            <h2 className="text-xl font-semibold">NEWSLETTER</h2>
             <div className="footer-title flex flex-col gap-3">
               <span>Be the first to know about new</span>
               <span>arrivals, look books, sales & promos!</span>
@@ -60,7 +60,7 @@ const Footer = () => {
         </div>
         <div className="text-center text-[14px] text-white py-2 mt-7 bg-black">
           <span className=" ">
-            Copyright © 20232020 All rights reserved | This template is made
+            Copyright © 2023-2020 All rights reserved | This template is made
             with by <span className="text-orange-700">Colorlib</span>
           </span>
         </div>

@@ -61,14 +61,14 @@ const UserTables: React.FC<ProductDashbord> = () => {
     if (searchQuery.trim() === "") {
       setFilteredProducts(products);
     } else {
-      const filtered = products.filter(
-        (product) =>
-          product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          product.id.toLowerCase().includes(searchQuery.toLowerCase())
+      const filtered = products.filter(product =>
+        (product.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (product.id.toString().toLowerCase().includes(searchQuery.toLowerCase()))
       );
       setFilteredProducts(filtered);
     }
   }, [searchQuery, products]);
+  
 
   const handleCreateSuccess = (newProduct: ProductDashbord) => {
     setProducts([...products, newProduct]);

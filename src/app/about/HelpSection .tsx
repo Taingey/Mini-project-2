@@ -25,7 +25,7 @@ const ImageSection: React.FC<ImageSectionProps> = ({
           height={300}
           className={`object-cover object-center lg:w-1/2 lg:mx-6 w-full h-96 rounded-lg lg:h-[36rem] ${animationDirection}`}
           src={imageUrl}
-          alt=""
+          alt="Animated GIF" unoptimized
         />
 
         <div className="mt-8 lg:w-1/2 lg:px-6 lg:mt-0">

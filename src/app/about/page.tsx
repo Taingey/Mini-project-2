@@ -8,10 +8,10 @@ const Page = () => {
   const [animationDirection, setAnimationDirection] = useState("");
 
   const images = [
-    "/ecommerce-development-blog_1.jpg",
-    "/ecommerce-development-blog_2.jpg",
-    "/ecommerce-development-blog_3",
-    "/ecommerce-development-blog_4"
+    "/ecommerce-development-blog_1.gif",
+    "/ecommerce-development-blog_2.gif",
+    "/ecommerce-development-blog_3.gif",
+    "/ecommerce-development-blog_4.gif"
   ];
 
   const paragraphs = [
