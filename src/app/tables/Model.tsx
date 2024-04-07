@@ -2,7 +2,7 @@ import Image from "next/image";
 import React from "react";
 
 interface Product {
-  id: number;
+  id: string | number;
   name: string;
   price: number;
   image: string;

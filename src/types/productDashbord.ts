@@ -1,5 +1,5 @@
 export type ProductDashbord = {
-    id: number,
+    id: string | number,
     name: string,
     email: string,
     image: string,

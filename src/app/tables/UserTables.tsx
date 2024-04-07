@@ -37,11 +37,11 @@ const UserTables: React.FC<ProductDashbord> = () => {
             id: product.id.toString()
           })
         );
-
+  
         const hasInvalidIds = productsWithUniqueIds.some(
           (product: ProductDashbord) => !product.id
         );
-
+  
         setProducts(productsWithUniqueIds);
         setIsLoading(false);
       } catch (error) {
@@ -56,6 +56,7 @@ const UserTables: React.FC<ProductDashbord> = () => {
     }
     fetchData();
   }, []);
+  
 
   useEffect(() => {
     if (searchQuery.trim() === "") {
@@ -92,7 +93,7 @@ const UserTables: React.FC<ProductDashbord> = () => {
       await fetch(`${url_based}/${productId}`, {
         method: "DELETE"
       });
-      setProducts(products.filter((product) => product.id !== productId));
+      setProducts(products.filter((product) => String(product.id) !== productId));
     } catch (error) {
       console.error("Error deleting product:", error);
     }
@@ -110,21 +111,25 @@ const UserTables: React.FC<ProductDashbord> = () => {
     const currentIndex = products.findIndex(
       (product) => product.id === selectedProductId
     );
+  
     if (currentIndex !== -1 && currentIndex < products.length - 1) {
       const nextProduct = products[currentIndex + 1];
-      handleDetails(nextProduct.id);
+  
+      handleDetails(String(nextProduct.id));
     }
   };
-
+  
+  
   const handleBackProduct = () => {
     const currentIndex = products.findIndex(
       (product) => product.id === selectedProductId
     );
     if (currentIndex !== -1 && currentIndex > 0) {
       const prevProduct = products[currentIndex - 1];
-      handleDetails(prevProduct.id);
+      handleDetails(String(prevProduct.id));
     }
   };
+  
 
   const columns: GridColDef<ProductDashbord>[] = [
     { field: "id", headerName: "ID", width: 150 },
@@ -144,7 +149,7 @@ const UserTables: React.FC<ProductDashbord> = () => {
       width: 150,
       renderCell: (params) => (
         <button
-          onClick={() => handleDetails(params.row.id)}
+          onClick={() => handleDetails(String(params.row.id))}
           className="text-blue-800 font-bold font-poppins"
         >
           Details
@@ -157,13 +162,14 @@ const UserTables: React.FC<ProductDashbord> = () => {
       width: 150,
       renderCell: (params) => (
         <button
-          onClick={() => handleDelete(params.row.id)}
+          onClick={() => handleDelete(String(params.row.id))}
           className="text-red-800 font-bold font-poppins"
         >
           Delete
         </button>
       )
     }
+    
   ];
 
   return (

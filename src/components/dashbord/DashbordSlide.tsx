@@ -20,7 +20,7 @@ const DashboardSlide = () => {
         setMenuOpen(false);
       }
     };
-
+    
     handleResize();
     window.addEventListener("resize", handleResize);
 

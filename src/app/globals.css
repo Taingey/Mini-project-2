@@ -58,6 +58,8 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+
 .the-best-ad > span {
   z-index: 2;
 }
