@@ -1,129 +1,190 @@
-"use client"
+"use client";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import React, { useState } from "react";
-import { styled } from '@mui/material/styles';
-import Button from "@mui/material/Button";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { ProductDashbord } from "@/types/productDashbord";
+import Image from "next/image";
+import axios from "axios";
 
+const url_based = "https://store.istad.co/api/products";
 
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1
-});
+const FILE_SIZE = 1024 * 1024 * 5;
+const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
 
-interface CreateDataTableProps {
-  onCreateSuccess: (newProduct: ProductDashbord) => void;
-}
+const fieldStyle = "border border-gray-300 rounded-md";
 
-const CreateDataTable: React.FC<CreateDataTableProps> = ({ onCreateSuccess }) => {
-  const [newProductName, setNewProductName] = useState<string>("");
-  const [newProductPrice, setNewProductPrice] = useState<number>(0);
-  const [newProductImage, setNewProductImage] = useState<File | null>(null);
-  const [error, setError] = useState<string>("");
+const CreateDataTable = () => {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append(
+    "Authorization",
+    "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE0Mjg3MDg1LCJpYXQiOjE3MTIxMjcwODUsImp0aSI6IjZlNTZjZmVhMmYzNjQ5MWZiODBjNjQzMDUxMGNmYjBjIiwidXNlcl9pZCI6Mjd9.y7Q1_2jGpWzLIbNDS1eMdeybyi9Is4TfenCC3Fu3YYo"
+  );
+  myHeaders.append(
+    "Cookie",
+    "csrftoken=GRqwv2b5Hy7cdCEWxJ3awPkre0LuihlQN6iRxWggvNJNIjPhFcKwanvS3vNqYtLF; sessionid=qs5l7g6fua0us31wew30hxgkew3puisp"
+  );
 
-  const handleCreateProduct = async () => {
+  const handleSubmitToServer = async (values: any) => {
     try {
-      const formData = new FormData();
-      formData.append("name", newProductName);
-      formData.append("price", newProductPrice.toString());
-      formData.append("image", newProductImage!);
-
-      const response = await fetch("https://store.istad.co/api/products", {
-        method: "POST",
-        body: formData
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        onCreateSuccess(data);
-        setNewProductName("");
-        setNewProductPrice(0);
-        setNewProductImage(null);
-        setError("");
-      } else {
-        const errorMessage = await response.text();
-        setError(errorMessage);
-      }
+      const response = await axios.post(
+        `${url_based}file/product/`,
+        values.image
+      );
+      return response.data.image;
     } catch (error) {
-      console.error("Error creating product:", error);
-      setError("Error creating product. Please try again later.");
+      console.log(error);
+    }
+  };
+
+  const handleCreateProduct = async (values: any, imageData: any) => {
+    try {
+      const imageUrl = await handleSubmitToServer(imageData);
+      console.log("data: ", values);
+      const postData = await fetch(`${url_based}products/`, {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify({
+          ...values,
+          image: imageUrl,
+        }),
+      });
+      console.log("post data: ", postData);
+    } catch (error) {
+      console.log(error);
     }
   };
 
   return (
-    <div>
-      <section className="fixed max-w-4xl p-6 mx-auto bg-slate-50 rounded-md shadow-md z-50">
-        <h2 className="text-lg font-semibold text-gray-700 capitalize dark:text-white">
-          Create New Product
-        </h2>
-        <form>
-          <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
-            <div>
-              <label
-                className="text-gray-700 dark:text-gray-200"
-                htmlFor="productName"
-              >
-                Product Name
-              </label>
-              <input
+    <div className="w-full pt-9">
+      <Formik
+        onSubmit={(values: any, { setSubmitting, resetForm }) => {
+          console.log(values);
+          const formData = new FormData();
+          formData.append("image", values.image);
+          handleCreateProduct(values, { image: formData });
+          setSubmitting(false);
+          resetForm();
+        }}
+        initialValues={{
+          category: {
+            name: "Hiking shoes",
+            icon: "https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1693342954-rincon-3-64ee5ca62e001.jpg?crop=1xw:1xh;center,top&resize=980:*",
+          },
+          name: "",
+          desc: "",
+          image: undefined,
+          price: 0,
+          quantity: 0,
+        }}
+      >
+        {({ isSubmitting, setFieldValue }) => (
+          <Form className="flex m-[30px] absolute flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="name">Product Name: </label>
+              <Field
+                placeholder="T-shirt"
+                className={fieldStyle}
+                name="name"
                 type="text"
-                placeholder="Product Name"
-                value={newProductName}
-                onChange={(e) => setNewProductName(e.target.value)}
-                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring"
               />
+              <ErrorMessage name="name">
+                {(msg) => <p className="text-red-600 text-sm italic">{msg}</p>}
+              </ErrorMessage>
             </div>
-
-            <div>
-              <label
-                className="text-gray-700 dark:text-gray-200"
-                htmlFor="productPrice"
-              >
-                Product Price
-              </label>
-              <input
+            <div className="flex flex-col gap-2">
+              <label htmlFor="desc">Description: </label>
+              <Field
+                placeholder="This is a t-shirt"
+                className={fieldStyle}
+                name="desc"
+                type="text"
+              />
+              <ErrorMessage name="desc">
+                {(msg) => <p className="text-red-600 text-sm italic">{msg}</p>}
+              </ErrorMessage>
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="price">Price: </label>
+              <Field
+                placeholder="100"
+                className={fieldStyle}
+                name="price"
                 type="number"
-                placeholder="Product Price"
-                value={newProductPrice}
-                onChange={(e) => setNewProductPrice(Number(e.target.value))}
-                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring"
               />
+              <ErrorMessage name="price">
+                {(msg) => <p className="text-red-600 text-sm italic">{msg}</p>}
+              </ErrorMessage>
             </div>
-
-            <Button
-              component="label"
-              variant="contained"
-              startIcon={<CloudUploadIcon />}
-              className="p-2"
-            >
-              Upload file
-              <VisuallyHiddenInput
-                type="file"
-                onChange={(e) => setNewProductImage(e.target.files![0])}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="quantity">Quantity: </label>
+              <Field
+                placeholder="1"
+                className={fieldStyle}
+                name="quantity"
+                type="number"
               />
-            </Button>
-          </div>
-          {error && <p className="text-red-500">{error}</p>}
-          <div className="flex justify-end mt-6">
-            <button
-              type="button"
-              onClick={handleCreateProduct}
-              className="px-8 py-2.5 leading-5 text-white transition-colors duration-300 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
-            >
-              Create Product
-            </button>
-          </div>
-        </form>
-      </section>
+              <ErrorMessage name="quantity">
+                {(msg) => <p className="text-red-600 text-sm italic">{msg}</p>}
+              </ErrorMessage>
+
+              <div>
+                <Field
+                  name="image"
+                  className={fieldStyle}
+                  type="file"
+                  title="Select a file"
+                  setFieldValue={setFieldValue}
+                  component={CustomInput}
+                />
+                <ErrorMessage name="image">
+                  {(msg) => <div className="text-danger">{msg}</div>}
+                </ErrorMessage>
+              </div>
+            </div>
+            <div>
+              <button
+                type="submit"
+                className="w-full px-4 py-3 bg-pink-600 text-white rounded-md"
+                disabled={isSubmitting}
+              >
+                Create
+              </button>
+            </div>
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 };
 
 export default CreateDataTable;
+
+function CustomInput({ field, form, setFieldValue, ...props }: any) {
+  const [previewImage, setPreviewImage] = useState<string | undefined>(undefined);
+  const name = field.name;
+  const onChange: any = (event: any) => {
+    console.log("event:", event.currentTarget.files);
+    const file = event.currentTarget.files[0];
+    setFieldValue(name, file);
+    setPreviewImage(URL.createObjectURL(file));
+  };
+
+  return (
+    <div className="flex flex-col gap-4 justify-center">
+      <input
+        type="file"
+        onChange={onChange}
+        {...props}
+        className="border border-gray-300 rounded-md"
+      />
+      {previewImage && (
+        <Image
+          className="rounded-md"
+          src={previewImage}
+          alt="preview Image"
+          width={100}
+          height={100}
+        />
+      )}
+    </div>
+  );
+}

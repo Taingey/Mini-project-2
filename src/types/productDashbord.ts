@@ -5,4 +5,5 @@ export type ProductDashbord = {
     image: string,
     price: number,
     desc: string
+    
 }

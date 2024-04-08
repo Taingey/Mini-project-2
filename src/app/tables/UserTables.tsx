@@ -1,64 +1,48 @@
-"use client";
+"use client"
 import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Modal from "./Model";
 import CreateDataTable from "./CreateDataTable";
-import { ProductDashbord } from "@/types/productDashbord";
-interface Product extends ProductDashbord {
-  price: number;
+
+interface ProductDashbord {
+  id: string |number;
   descts: string;
+  email: string;
+  image: string;
+  price: number;
+  desc: string
 }
 
 const url_based = "https://store.istad.co/api/products";
 
-const UserTables: React.FC<ProductDashbord> = () => {
+const UserTables: React.FC = () => {
   const [products, setProducts] = useState<ProductDashbord[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<ProductDashbord[]>(
-    []
-  );
+  const [filteredProducts, setFilteredProducts] = useState<ProductDashbord[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedProduct, setSelectedProduct] =
-    useState<ProductDashbord | null>(null);
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(
-    null
-  );
-  const [isCreateDataTableVisible, setIsCreateDataTableVisible] =
-    useState<boolean>(false);
+  const [selectedProduct, setSelectedProduct] = useState<ProductDashbord | null>(null);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isCreateDataTableVisible, setIsCreateDataTableVisible] = useState<boolean>(false);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(url_based);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch data: ${response.statusText}`);
+      }
+      const data = await response.json();
+      setProducts(data.results);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setIsLoading(false);
+      alert(`Error fetching data: ${error.message}`);
+    }
+  };
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch(url_based);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch data: ${response.statusText}`);
-        }
-        const data = await response.json();
-        const productsWithUniqueIds = data.results.map(
-          (product: ProductDashbord) => ({
-            ...product,
-            id: product.id.toString()
-          })
-        );
-
-        const hasInvalidIds = productsWithUniqueIds.some(
-          (product: ProductDashbord) => !product.id
-        );
-
-        setProducts(productsWithUniqueIds);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setIsLoading(false);
-        if (error instanceof Error) {
-          alert(`Error fetching data: ${error.message}`);
-        } else {
-          alert("Error fetching data.");
-        }
-      }
-    }
     fetchData();
   }, []);
 
@@ -69,47 +53,31 @@ const UserTables: React.FC<ProductDashbord> = () => {
       const filtered = products.filter(
         (product) =>
           product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          product.id
-            .toString()
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase())
+          product.id.toString().toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredProducts(filtered);
     }
   }, [searchQuery, products]);
 
-  const handleCreateSuccess = (newProduct: ProductDashbord) => {
-    setProducts([...products, newProduct]);
-    setIsCreateDataTableVisible(false);
-  };
-
   const handleDetails = async (productId: string) => {
-    try {
-      const response = await fetch(`${url_based}/${productId}`);
-      const productDetails = await response.json();
-      setSelectedProduct(productDetails);
-      setSelectedProductId(productId);
-      setIsModalOpen(true);
-    } catch (error) {
-      console.error("Error fetching product details:", error);
-    }
+    const response = await fetch(`${url_based}/${productId}`);
+    const productDetails = await response.json();
+    setSelectedProduct(productDetails);
+    setSelectedProductId(productId);
+    setIsModalOpen(true);
   };
 
   const handleDelete = async (productId: string) => {
-    try {
-      await fetch(`${url_based}/${productId}`, {
-        method: "DELETE"
-      });
-      setProducts(
-        products.filter((product) => String(product.id) !== productId)
-      );
-    } catch (error) {
-      console.error("Error deleting product:", error);
-    }
+    await fetch(`${url_based}/${productId}`, {
+      method: "DELETE"
+    });
+    setProducts(products.filter((product) => product.id !== productId));
   };
 
-  const handleToggleCreateDataTable = () => {
-    setIsCreateDataTableVisible((prev) => !prev);
+  const handleCreateSuccess = () => {
+    setIsCreateDataTableVisible(false);
+    setIsLoading(true);
+    fetchData(); // Reload data after successful creation
   };
 
   const handleCloseModal = () => {
@@ -123,7 +91,6 @@ const UserTables: React.FC<ProductDashbord> = () => {
 
     if (currentIndex !== -1 && currentIndex < products.length - 1) {
       const nextProduct = products[currentIndex + 1];
-
       handleDetails(String(nextProduct.id));
     }
   };
@@ -140,7 +107,7 @@ const UserTables: React.FC<ProductDashbord> = () => {
 
   const columns: GridColDef<ProductDashbord>[] = [
     { field: "id", headerName: "ID", width: 150 },
-    { field: "name", headerName: "name", width: 300, editable: true },
+    { field: "name", headerName: "Name", width: 300, editable: true },
     { field: "price", headerName: "Price", width: 200, editable: true },
     {
       field: "image",
@@ -182,8 +149,8 @@ const UserTables: React.FC<ProductDashbord> = () => {
     <Box sx={{ height: "80vh", width: "100%", backgroundColor: "white" }}>
       <div className="flex items-center justify-between px-2 mb-3">
         <button
-          onClick={handleToggleCreateDataTable}
           className="bg-red-500 text-white py-2 px-5 rounded-md"
+          onClick={() => setIsCreateDataTableVisible(true)}
         >
           Create New Product
         </button>
